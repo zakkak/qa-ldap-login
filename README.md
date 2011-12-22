@@ -22,6 +22,6 @@ To install the plugin:
 
 4. Insert the following line of code above the if statement near line 59 of qa-include/qa-page-login.php
 
-	<require_once QA_INCLUDE_DIR.'../qa-plugin/qa-ldap-login/qa-ldap-process.php';>
+	require_once QA_INCLUDE_DIR.'../qa-plugin/qa-ldap-login/qa-ldap-process.php';
 
 5. If your LDAP settings are configured correctly, that should be it!
