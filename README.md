@@ -13,9 +13,15 @@ In order for PHP's built-in LDAP functionality to work correctly, your web serve
 ## INSTALL
 
 To install the plugin:
+
 1. Add the qa-ldap-login directory with plugin files to the qa-plugin directory for your Q2A install.
+
 2. Edit ldap-config.php to match your LDAP server settings.
+
 3. Modify the qa-ldap-process.php to match your LDAP server settings (line 45).
+
 4. Insert the following line of code above the if statement near line 59 of qa-include/qa-page-login.php
+
 	<require_once QA_INCLUDE_DIR.'../qa-plugin/qa-ldap-login/qa-ldap-process.php';>
+
 5. If your LDAP settings are configured correctly, that should be it!
