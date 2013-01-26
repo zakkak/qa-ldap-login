@@ -38,7 +38,7 @@ class ldap_logout_process {
     if(isset($_SESSION['logout_url'])){
       $tourl = $_SESSION['logout_url'];
     } else {
-      $tourl = "logout";
+      $tourl = false;
     }
     if(isset($_COOKIE["qa-login_fname"])){
       setcookie("qa-login_fname", '1', time()-$expire, '/');
@@ -46,7 +46,11 @@ class ldap_logout_process {
       setcookie("qa-login_email", '1', time()-$expire, '/');
     }
     session_destroy();
-    qa_redirect($tourl);
+    if (!$tourl) {
+      qa_redirect('logout');
+    } else {
+      header('Location: '.$tourl);
+    }
     return null;
   } // end function process_request
 
