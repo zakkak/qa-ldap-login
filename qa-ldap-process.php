@@ -9,6 +9,8 @@
 	 * the login page.
 	*/
 
+  require QA_INCLUDE_DIR."qa-base.php"
+
 	function ldap_process ($user,$pass)
 	{
 
@@ -88,7 +90,7 @@
 					$_SESSION["qa-login_fname"] = $fname;
 					$_SESSION["qa-login_email"] = $email;
 				}
-				header("Location: /login");
+				qa_redirect('login');
 				exit();
 			} else {
 				$error = 'emailhandle';
