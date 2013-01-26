@@ -48,7 +48,7 @@ class ldap_login {
   function logout_html ($tourl)
   {
     $_SESSION['logout_url'] = $tourl;
-    echo('<a href="/auth/logout">Logout</a>');
+    echo('<a href="./auth/logout">Logout</a>');
   } // end function logout_html
 
 } // end class ldap_login
