@@ -32,7 +32,7 @@ class ldap_logout_process {
 
   function process_request($request)
   {
-    require_once QA_INCLUDE_DIR."qa-base.php"
+    require_once QA_INCLUDE_DIR."qa-base.php";
 
     $expire = 14*24*60*60;
     if(isset($_SESSION['logout_url'])){
