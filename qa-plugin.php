@@ -11,7 +11,6 @@
 
 // don't allow this page to be requested directly from browser
 error_reporting(E_ALL);
-// disable this when not debugging
 ini_set('display_errors', True);
 
 if (!defined('QA_VERSION'))
