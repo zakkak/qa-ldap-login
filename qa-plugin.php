@@ -4,7 +4,7 @@
 	Plugin Description: Allows ldap authentication within Q2A
 	Plugin Version: 0.3
 	Plugin Date: 2013-01-25
-	Plugin Authors: Foivos Zakkak, Karl Bitz (until 0.2)
+	Plugin Authors: Karl Bitz, Foivos Zakkak
 	Plugin License: Free
 	Plugin Minimum Question2Answer Version: 1.4
 */
