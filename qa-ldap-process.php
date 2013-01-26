@@ -33,7 +33,9 @@
 
         $dn = str_replace("USERNAME", $user, $search_post);
         // Check if it authenticates
+        error_reporting(E_ALL^ E_WARNING);
         $bind = ldap_bind($con,$dn, $pass);
+        error_reporting(E_ALL);
 
         if ($bind) {
 
