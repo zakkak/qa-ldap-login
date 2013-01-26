@@ -9,7 +9,7 @@
 	 * the login page.
 	*/
 
-  require QA_INCLUDE_DIR."qa-base.php"
+  require QA_INCLUDE_DIR."qa-base.php";
 
 	function ldap_process ($user,$pass)
 	{
