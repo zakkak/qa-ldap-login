@@ -42,9 +42,9 @@
           $search = ldap_search($con, $dn, $filter, $attributes);
           $data = ldap_get_entries($con, $search);
 
-          $fname = explode(': ' $data[0]["givenname"])[1];
-          $sname = explode(': ' $data[0]["surname"])[1];
-          $mail = explode(': ' $data[0]["mail"])[1];
+          $fname = explode(': ', $data[0]["givenname"])[1];
+          $sname = explode(': ', $data[0]["surname"])[1];
+          $mail = explode(': ', $data[0]["mail"])[1];
 
           // Close LDAP link
           ldap_close($con);
