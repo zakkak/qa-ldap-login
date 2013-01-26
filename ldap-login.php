@@ -50,8 +50,8 @@ class ldap_login {
     require_once QA_INCLUDE_DIR."qa-base.php";
 
     $_SESSION['logout_url'] = $tourl;
-    logout_url = qa_path('auth/logout', null, qa_path_to_root());
-    echo('<a href="'.logout_url.'">Logout</a>');
+    $logout_url = qa_path('auth/logout', null, qa_path_to_root());
+    echo('<a href="'.$logout_url.'">Logout</a>');
   } // end function logout_html
 
 } // end class ldap_login
