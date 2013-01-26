@@ -32,11 +32,13 @@ class ldap_logout_process {
 
   function process_request($request)
   {
+    require_once QA_INCLUDE_DIR."qa-base.php"
+
     $expire = 14*24*60*60;
     if(isset($_SESSION['logout_url'])){
       $tourl = $_SESSION['logout_url'];
     } else {
-      $tourl = "/logout";
+      $tourl = "logout";
     }
     if(isset($_COOKIE["qa-login_fname"])){
       setcookie("qa-login_fname", '1', time()-$expire, '/');
@@ -44,7 +46,7 @@ class ldap_logout_process {
       setcookie("qa-login_email", '1', time()-$expire, '/');
     }
     session_destroy();
-    header("Location: ". $tourl);
+    qa_redirect($tourl);
     return null;
   } // end function process_request
 
