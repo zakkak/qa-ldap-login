@@ -29,7 +29,7 @@
       // check whether the search string contains USERNAME
       if ( strpos($search_post, 'USERNAME') !== false ) {
 
-        $dn = str_replace("USERNAME", $user, $search_post)
+        $dn = str_replace("USERNAME", $user, $search_post);
         // Check if it authenticates
         $bind = ldap_bind($con,$dn, $pass);
 
