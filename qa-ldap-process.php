@@ -6,59 +6,55 @@
 	 * a cookie that can be checked by the ldap-login
 	 * module's check_login function, and bypasses the
 	 * internal QA auth mechanism by redirecting back to
-	 * the login page. 
+	 * the login page.
 	*/
 
-	function ldap_process ($user,$pass) 
-	{	
-		
+	function ldap_process ($user,$pass)
+	{
+
 		require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ldap-config.php";
-		
+
 		// Establish link with LDAP server
-		$con =  ldap_connect($hostname,$port) or die ("Could not connect to ldap host.");
+		$con =  ldap_connect($ldap_hostname,$ldap_port) or die ("Could not connect to ldap host.");
 		if (!is_resource($con)) trigger_error("Unable to connect to $hostname",E_USER_WARNING);
 		ldap_set_option($con, LDAP_OPT_PROTOCOL_VERSION, 3);
 		ldap_set_option($con, LDAP_OPT_REFERRALS, 0);
-		
-		// Removing @email.com
-		if(strstr($user, '@')){
-			$parts = preg_split("/@/", $user);
-			$user = $parts[0];
-		}
 
-		// Check if user/pass combo authenticates
-		$bind = ldap_bind($con,$user . $account_suffix, $pass);
-		
-		if ($bind) {
-			
-		} else {
-			return false;
-		}
+    // Check ig user or pass is empty
+    if ( '' == $user || '' ==  $pass ) {
+      return false;
+    }
 
-		// Connect to LDAP with read-only admin account
-		$bind = ldap_bind($con,$username . $account_suffix, $password);
+    foreach ($ldap_search_strings as &$search_post) {
+      // check whether the search string contains USERNAME
+      if ( strpos($search_post, 'USERNAME') !== false ) {
 
-		if ($bind) {
-			
-			// Run query to determine user's name
-			// Replace DOMAIN & com with ldap domain info
-			$dn = "CN=Users,DC=DOMAIN,DC=com";
-			$filter = "(&(objectClass=user)(sAMAccountName=".$uname."))";
-			$attributes = array("displayname");
+        $dn = str_replace("USERNAME", $user, $search_post)
+        // Check if it authenticates
+        $bind = ldap_bind($con,$dn, $pass);
 
-			$search = ldap_search($con, $dn, $filter, $attributes);
-			$data = ldap_get_entries($con, $search);
+        if ($bind) {
 
-			$explode = ldap_explode_dn($data[0]["dn"], 0);
-			$name = explode(" ",str_replace("CN=","",$explode[0]));
-			
-			// Close LDAP link
-			ldap_close($con);
-			
-			// Return user's name in array
-			$name[2] = $user;
-			return $name;
-		}
+          // Run query to determine user's name
+          $filter = "(|(objectClass=user)(objectClass=person))";
+          $attributes = array("givenname", "surname", "mail");
+
+          $search = ldap_search($con, $dn, $filter, $attributes);
+          $data = ldap_get_entries($con, $search);
+
+          $fname = explode(': ' $data[0]["givenname"])[1];
+          $sname = explode(': ' $data[0]["surname"])[1];
+          $mail = explode(': ' $data[0]["mail"])[1];
+
+          // Close LDAP link
+          ldap_close($con);
+
+          return array( $fname, $sname, $mail);
+        }
+      }
+    }
+
+    return false;
 	}
 
 	function validateEmpty($attr){
@@ -68,15 +64,15 @@
 			return true;
 		}
 	}
-	
+
 	$expire = 14*24*60*60;
 
 	if (validateEmpty($inemailhandle)) {
-		
+
 		if (validateEmpty($inpassword)) {
-		
+
 			$name = ldap_process($inemailhandle,$inpassword);
-		
+
 			if ($name) {
 				// Set name variables based on results from LDAP
 				$fname = $name[0];
@@ -97,7 +93,7 @@
 			} else {
 				$error = 'emailhandle';
 			}
-		
+
 		} else {
 			$error = 'password';
 		}
