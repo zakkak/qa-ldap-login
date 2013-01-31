@@ -27,9 +27,10 @@ class ldap_login {
       $source = 'ldap';
       $identifier = $email;
 
+      $username = explode("@", $email)[0];
       $fields['email'] = $email;
       $fields['confirmed'] = true;
-      $fields['handle'] = $email;
+      $fields['handle'] = $username;
       $fields['name'] = $fname . " " . $lname;
       qa_log_in_external_user($source,$identifier,$fields);
     }
