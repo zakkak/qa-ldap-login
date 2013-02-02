@@ -52,7 +52,7 @@ class ldap_login {
 
     $_SESSION['logout_url'] = $tourl;
     $logout_url = qa_path('auth/logout', null, qa_path_to_root());
-    echo('<a href="'.$logout_url.'">Logout</a>');
+    echo('<a href="'.$logout_url.'">'.qa_lang_html('main/nav_logout').'</a>');
   } // end function logout_html
 
 } // end class ldap_login
