@@ -19,15 +19,16 @@ class ldap_login {
         $fname = $_COOKIE["qa-login_fname"];
         $lname = $_COOKIE["qa-login_lname"];
         $email = $_COOKIE["qa-login_email"];
+        $username = $_COOKIE["qa-login_user"];
       } else {
         $fname = $_SESSION["qa-login_fname"];
         $lname = $_SESSION["qa-login_lname"];
         $email = $_SESSION["qa-login_email"];
+        $username = $_SESSION["qa-login_user"];
       }
       $source = 'ldap';
       $identifier = $email;
 
-      $username = explode("@", $email)[0];
       $fields['email'] = $email;
       $fields['confirmed'] = true;
       $fields['handle'] = $username;
