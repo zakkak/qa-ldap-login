@@ -40,20 +40,20 @@
         if ($bind) {
 
           // Run query to determine user's name
-          $filter = "(|(objectClass=user)(objectClass=person))";
-          $attributes = array("givenname", "surname", "mail");
+          $filter = $ldap_filter;
+          $attributes = array($ldap_fname, $ldap_sname, $ldap_mail);
 
           $search = ldap_search($con, $dn, $filter, $attributes);
           $data = ldap_get_entries($con, $search);
 
-          $fname = $data[0]["givenname"][0];
-          $sname = $data[0]["surname"][0];
-          $mail  = $data[0]["mail"][0];
+          $fname = $data[0][$ldap_fname][0];
+          $sname = $data[0][$ldap_sname][0];
+          $mail  = $data[0][$ldap_mail][0];
 
           // Close LDAP link
           ldap_close($con);
 
-          return array( $fname, $sname, $mail);
+          return array( $fname, $sname, $mail, $user);
         }
       }
     }
@@ -82,15 +82,18 @@
 				$fname = $name[0];
 				$lname = $name[1];
 				$email = $name[2];
+				$user = $name[3];
 
 				if($inremember == 'true') {
 					setcookie("qa-login_lname", $lname, time() + $expire, '/');
 					setcookie("qa-login_fname", $fname, time() + $expire, '/');
 					setcookie("qa-login_email", $email, time() + $expire, '/');
+					setcookie("qa-login_user", $user, time() + $expire, '/');
 				} else {
 					$_SESSION["qa-login_lname"] = $lname;
 					$_SESSION["qa-login_fname"] = $fname;
 					$_SESSION["qa-login_email"] = $email;
+					$_SESSION["qa-login_user"] = $user;
 				}
 				qa_redirect('login');
 				exit();
