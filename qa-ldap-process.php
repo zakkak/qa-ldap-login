@@ -1,7 +1,10 @@
 <?php
   /* This script grabs the user/pass combo directly
-   * from the Question2Answer login page and checks
-   * it against a LDAP authentication source. Following
+   * from the Question2Answer login page.
+   * It uses a service account to find
+   * the user in the ldap database. 
+   * When found the user/pass combo is checked against the 
+   * LDAP authentication source. Following
    * this check, it either creates a SESSION array or
    * a cookie that can be checked by the ldap-login
    * module's check_login function, and bypasses the
@@ -27,36 +30,37 @@
       return false;
     }
 
-    foreach ($ldap_search_strings as &$search_post) {
-      // check whether the search string contains USERNAME
-      if ( strpos($search_post, 'USERNAME') !== false ) {
-
-        $dn = str_replace("USERNAME", $user, $search_post);
-        // Check if it authenticates
+        // Check if it authenticates the service account
         error_reporting(E_ALL^ E_WARNING);
-        $bind = ldap_bind($con,$dn, $pass);
+        $bind = ldap_bind($con,$ldap_service_account_bind,$ldap_service_account_pwd);
         error_reporting(E_ALL);
 
         if ($bind) {
-
+  	
           // Run query to determine user's name
           $filter = $ldap_filter;
-          $attributes = array($ldap_fname, $ldap_sname, $ldap_mail);
+          $attributes = array('dn',$ldap_fname, $ldap_sname, $ldap_mail);
 
-          $search = ldap_search($con, $dn, $filter, $attributes);
+          $search = ldap_search($con, $user_dn,"(".$ldap_userfield."=".$user.")", $attributes);
           $data = ldap_get_entries($con, $search);
-
-          $fname = $data[0][$ldap_fname][0];
+          
+	  $fname = $data[0][$ldap_fname][0];
           $sname = $data[0][$ldap_sname][0];
           $mail  = $data[0][$ldap_mail][0];
 
-          // Close LDAP link
+	  if(@ldap_bind($con, $data[0]['dn'], $pass)) {
+ 	  } else {
+  		//print "Failed to bind with user to authenticate.";
+		return false;
+ 	  }
+
+
+          // Unbind & Close LDAP link
+	  ldap_unbind($con);
           ldap_close($con);
 
           return array( $fname, $sname, $mail, $user);
-        }
-      }
-    }
+      	}
 
     return false;
   }
