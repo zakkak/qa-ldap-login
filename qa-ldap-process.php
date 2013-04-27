@@ -1,7 +1,10 @@
 <?php
   /* This script grabs the user/pass combo directly
-   * from the Question2Answer login page and checks
-   * it against a LDAP authentication source. Following
+   * from the Question2Answer login page.
+   * It uses a service account to find
+   * the user in the ldap database. 
+   * When found the user/pass combo is checked against the 
+   * LDAP authentication source. Following
    * this check, it either creates a SESSION array or
    * a cookie that can be checked by the ldap-login
    * module's check_login function, and bypasses the
@@ -10,53 +13,41 @@
   */
 
   require_once QA_INCLUDE_DIR."qa-base.php";
+  require  QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ldap-config.php";
+  require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/LDAPServer.php";
+  require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ActiveDirectoryLDAPServer.php";
+  require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/GenericLDAPServer.php";
+
+  global $ldapserver;
 
   function ldap_process ($user,$pass)
   {
-
-    require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ldap-config.php";
-
-    // Establish link with LDAP server
-    $con =  ldap_connect($ldap_hostname,$ldap_port) or die ("Could not connect to ldap host.");
-    if (!is_resource($con)) trigger_error("Unable to connect to $hostname",E_USER_WARNING);
-    ldap_set_option($con, LDAP_OPT_PROTOCOL_VERSION, 3);
-    ldap_set_option($con, LDAP_OPT_REFERRALS, 0);
-
+	global $ldapserver;
+	
     // Check ig user or pass is empty
     if ( '' == $user || '' ==  $pass ) {
       return false;
     }
 
-    foreach ($ldap_search_strings as &$search_post) {
-      // check whether the search string contains USERNAME
-      if ( strpos($search_post, 'USERNAME') !== false ) {
-
-        $dn = str_replace("USERNAME", $user, $search_post);
-        // Check if it authenticates
-        error_reporting(E_ALL^ E_WARNING);
-        $bind = ldap_bind($con,$dn, $pass);
-        error_reporting(E_ALL);
-
-        if ($bind) {
-
-          // Run query to determine user's name
-          $filter = $ldap_filter;
-          $attributes = array($ldap_fname, $ldap_sname, $ldap_mail);
-
-          $search = ldap_search($con, $dn, $filter, $attributes);
-          $data = ldap_get_entries($con, $search);
-
-          $fname = $data[0][$ldap_fname][0];
-          $sname = $data[0][$ldap_sname][0];
-          $mail  = $data[0][$ldap_mail][0];
-
-          // Close LDAP link
-          ldap_close($con);
-
-          return array( $fname, $sname, $mail, $user);
-        }
-      }
+    if (LDAPServerType::ActiveDirectory) 
+    {
+    	$ldapserver = new ActiveDirectoryLDAPServer();
     }
+    else 
+    {
+ 		$ldapserver = new GenericLDAPServer();
+    }
+
+    $ldapserver->connectWithServer();
+
+    if ($ldapserver->bindToLDAP($user,$pass)) {
+	  
+		$data = $ldapserver->getUserAttributes();
+
+        return $data;
+    }
+
+    $ldapserver->closeServerConnection();
 
     return false;
   }
@@ -76,7 +67,6 @@
     if (validateEmpty($inpassword)) {
 
       $name = ldap_process($inemailhandle,$inpassword);
-
       if ($name) {
         // Set name variables based on results from LDAP
         $fname = $name[0];
@@ -98,8 +88,8 @@
         qa_redirect('login');
         exit();
       } else {
-        $error = 'emailhandle';
-      }
+         $error = 'emailhandle';
+	}
 
     } else {
       $error = 'password';
