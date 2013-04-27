@@ -9,16 +9,22 @@ class LDAPServerType
 	const GenericLDAP = true;
 }
 
-// Default variables used
-$ldap_hostname="ldap://localhost"; // use ldap:// for non ssl encrypted servers
-$ldap_port="389"; // use 389 for non ssl encrypted servers
+
+// use ldap:// for non ssl encrypted servers
+// use ldaps:// for ssl encrypted servers
+$ldap_hostname="ldap://localhost";
+// use 389 for non ssl encrypted servers
+// use 636 for ssl encrypted servers
+$ldap_port="389";
 $ldap_filter = '(objectClass=*)';
 $ldap_fname = 'givenname';
 $ldap_sname = 'sn';
 $ldap_mail = 'mail';
 
 // use this for Generic LDAP, Active Directory LDAP doesn't need it
-$ldap_search_strings = array('uid=USERNAME,OU=people,DC=company,DC=local');
+// Can support more than one search strings, iterateds through all of them and returns if the bind succeeds
+// Don't replace the USERNAME in uid, it is automatically replaced by the plugin at login with the user's username
+$ldap_search_strings = array('uid=USERNAME,OU=people,DC=company,DC=local', 'uid=USERNAME,OU=people3,DC=company,DC=local');
 
 // Below are specific Active Directory LDAP variables,don't bother if you use GenericLDAP
 $ldap_service_account_bind = "CN=serviceaccount,CN=Managed Service Accounts,DC=contoso,DC=local"; 
