@@ -22,8 +22,8 @@
 
   function ldap_process ($user,$pass)
   {
-	global $ldapserver;
-	
+    global $ldapserver;
+
     // Check ig user or pass is empty
     if ( '' == $user || '' ==  $pass ) {
       return false;
@@ -35,20 +35,17 @@
     }
     else 
     {
- 		$ldapserver = new GenericLDAPServer();
+      $ldapserver = new GenericLDAPServer();
     }
 
     $ldapserver->connectWithServer();
 
     if ($ldapserver->bindToLDAP($user,$pass)) {
-	  
-		$data = $ldapserver->getUserAttributes();
-
-        return $data;
+      $data = $ldapserver->getUserAttributes();
+      return $data;
     }
 
     $ldapserver->closeServerConnection();
-
     return false;
   }
 
@@ -88,8 +85,13 @@
         qa_redirect('login');
         exit();
       } else {
-         $error = 'emailhandle';
-	}
+        if($ldap_login_only) {
+          qa_redirect('login');
+          exit();
+        } else {
+          $error = 'emailhandle';
+        }
+      }
 
     } else {
       $error = 'password';

@@ -20,6 +20,7 @@ $ldap_filter = '(objectClass=*)';
 $ldap_fname = 'givenname';
 $ldap_sname = 'sn';
 $ldap_mail = 'mail';
+$ldap_allow_normal_login = false;
 
 // use this for Generic LDAP, Active Directory LDAP doesn't need it
 // Can support more than one search strings, iterateds through all of them and returns if the bind succeeds
