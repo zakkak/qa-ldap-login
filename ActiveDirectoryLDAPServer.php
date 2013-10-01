@@ -36,8 +36,15 @@ class ActiveDirectoryLDAPServer extends LDAPServer
 		}
 		
 		// if the user is found, try to authenticate with his DN and password entered
-		$this->dn = $data[0]['dn'];
-		@$bind_user = ldap_bind($this->con, $this->dn, $pass);
+		if (isset($data[0]))
+		{
+			$this->dn = $data[0]['dn'];
+			@$bind_user = ldap_bind($this->con, $this->dn, $pass);
+		}
+		else
+		{
+			return false;
+		}
 	
         error_reporting(E_ALL);
 
@@ -45,9 +52,11 @@ class ActiveDirectoryLDAPServer extends LDAPServer
 		if($bind_user)
 		{
 			$this->authenticatedUser=$user;
+			return($bind_user); 
 		}
+
+		return false;
 	
-		return($bind_user); 
 	}
 
 	public function getUserAttributes()
