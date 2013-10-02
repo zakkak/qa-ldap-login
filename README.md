@@ -12,7 +12,7 @@ To install the plugin:
 
 1. Add the qa-ldap-login directory with plugin files to the qa-plugin directory for your Q2A install.
 
-2. Edit copy ldap-config-example.php to ldap-config.php and edit to match your LDAP server settings.
+2. Copy ldap-config-example.php to ldap-config.php and edit to match your LDAP server settings.
 
 3. Insert the following line of code above the if statement near line 59 of qa-include/qa-page-login.php
 
