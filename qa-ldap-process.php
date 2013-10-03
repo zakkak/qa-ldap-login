@@ -85,11 +85,11 @@
         qa_redirect('login');
         exit();
       } else {
-        if($ldap_login_only) {
+        if($ldap_allow_normal_login) {
+          $error = 'emailhandle';
+        } else {
           qa_redirect('login');
           exit();
-        } else {
-          $error = 'emailhandle';
         }
       }
 
