@@ -15,20 +15,20 @@ global $ldap_search_strings,
 // Important!! set type of LDAP server you want to use
 class LDAPServerType {
 	const ActiveDirectory = false;
-	const GenericLDAP = true;
+	const GenericLDAP     = true;
 }
 
 
 // use ldap:// for non ssl encrypted servers
 // use ldaps:// for ssl encrypted servers
-$ldap_hostname="ldap://localhost";
+$ldap_hostname           = "ldap://localhost";
 // use 389 for non ssl encrypted servers
 // use 636 for ssl encrypted servers
-$ldap_port="389";
-$ldap_filter = '(objectClass=*)';
-$ldap_fname = 'givenname';
-$ldap_sname = 'sn';
-$ldap_mail = 'mail';
+$ldap_port               = "389";
+$ldap_filter             = '(objectClass=*)';
+$ldap_fname              = 'givenname';
+$ldap_sname              = 'sn';
+$ldap_mail               = 'mail';
 $ldap_allow_normal_login = false;
 
 // use this for Generic LDAP, Active Directory LDAP doesn't need it
@@ -42,9 +42,9 @@ $ldap_search_strings = array('uid=USERNAME,OU=people,DC=company,DC=local',
 // Below are specific Active Directory LDAP variables,don't bother if
 // you use GenericLDAP
 $ldap_service_account_bind = "CN=serviceaccount,CN=Managed Service Accounts,DC=contoso,DC=local";
-$ldap_service_account_pwd = "12345678";
+$ldap_service_account_pwd  = "12345678";
 // Usually default user OU in the Active Directory, otherwise top of
 // the tree
-$base_dn = "OU=Users,DC=contoso,DC=local";
+$base_dn                   = "OU=Users,DC=contoso,DC=local";
 
 ?>
