@@ -2,8 +2,8 @@
   /* This script grabs the user/pass combo directly
    * from the Question2Answer login page.
    * It uses a service account to find
-   * the user in the ldap database. 
-   * When found the user/pass combo is checked against the 
+   * the user in the ldap database.
+   * When found the user/pass combo is checked against the
    * LDAP authentication source. Following
    * this check, it either creates a SESSION array or
    * a cookie that can be checked by the ldap-login
@@ -29,11 +29,11 @@
       return false;
     }
 
-    if (LDAPServerType::ActiveDirectory) 
+    if (LDAPServerType::ActiveDirectory)
     {
     	$ldapserver = new ActiveDirectoryLDAPServer();
     }
-    else 
+    else
     {
       $ldapserver = new GenericLDAPServer();
     }
@@ -70,7 +70,7 @@
         $lname = $name[1];
         $email = $name[2];
         $user = $name[3];
-        
+
         if($inremember == 'true') {
           setcookie("qa-login_lname", $lname, time() + $expire, '/');
           setcookie("qa-login_fname", $fname, time() + $expire, '/');
@@ -85,11 +85,11 @@
         qa_redirect('login');
         exit();
       } else {
-        if($ldap_login_only) {
+        if($ldap_allow_normal_login) {
+          $error = 'emailhandle';
+        } else {
           qa_redirect('login');
           exit();
-        } else {
-          $error = 'emailhandle';
         }
       }
 
