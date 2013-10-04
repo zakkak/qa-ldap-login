@@ -22,5 +22,6 @@ if (!defined('QA_VERSION'))
 qa_register_plugin_module('login','ldap-login.php','ldap_login','LDAP Login');
 qa_register_plugin_layer('ldap-login-layer.php','LDAP Login Layer');
 qa_register_plugin_module('page','ldap-login-logout-page.php','ldap_logout_process','LDAP Logout Process');
+qa_register_plugin_module('module', 'ldap-login-admin-form.php', 'ldap_login_admin_form', 'LDAP Login');
 
 ?>

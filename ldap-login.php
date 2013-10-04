@@ -12,15 +12,19 @@ class ldap_login {
   // a cookie or session variable (dependent on 'remember me' setting
   function check_login()
   {
-    if(!isset($_COOKIE["qa-login_fname"]) && !isset($_SESSION["qa-login_fname"])) {
+    if(!isset($_COOKIE["qa-login_fname"]) && !isset($_SESSION["qa-login_fname"]))
+    {
       return false;
-    } else {
-      if(isset($_COOKIE["bdops-login_fname"])){
+    } else
+    {
+      if(isset($_COOKIE["bdops-login_fname"]))
+      {
         $fname = $_COOKIE["qa-login_fname"];
         $lname = $_COOKIE["qa-login_lname"];
         $email = $_COOKIE["qa-login_email"];
         $username = $_COOKIE["qa-login_user"];
-      } else {
+      } else
+      {
         $fname = $_SESSION["qa-login_fname"];
         $lname = $_SESSION["qa-login_lname"];
         $email = $_SESSION["qa-login_email"];
