@@ -86,25 +86,21 @@
           $_SESSION["qa-login_email"] = $email;
           $_SESSION["qa-login_user"] = $user;
         }
-        qa_redirect('login');
+        $topath=qa_get('to');
+        if (isset($topath))
+          qa_redirect_raw(qa_path_to_root().$topath); // path already provided as URL fragment
+        else
+        qa_redirect('');
         exit();
       } else
       {
-        if(qa_opt('ldap_login_allow_normal'))
+        if(!qa_opt('ldap_login_allow_normal'))
         {
-          $error = 'emailhandle';
-        } else
-        {
+          // FIXME somehow print a message
           qa_redirect('login');
           exit();
         }
       }
-    } else
-    {
-      $error = 'password';
     }
-  } else
-  {
-    $error = 'emailhandle';
   }
 ?>

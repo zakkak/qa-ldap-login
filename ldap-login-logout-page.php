@@ -1,7 +1,7 @@
 <?php
 
-class ldap_logout_process {
-
+class ldap_logout_process
+{
   var $directory;
   var $urltoroot;
 

@@ -1,10 +1,18 @@
 ## README
 
-qa-ldap-login is a LDAP authentication mechanism for Question2Answer. In it's current form, it is intended to replace/augment the existing Q2A login form. The script will first check user credentials against LDAP and fall back to the internal authentication if that fails. If a user exists in LDAP but not Q2A, the script will create a new user account for the individual.
+qa-ldap-login is an LDAP authentication mechanism for
+Question2Answer. In it's current form, it is intended to
+replace/augment the existing Q2A login form. The script will first
+check user credentials against LDAP and can fall back to the internal
+authentication if that fails. If a user exists in LDAP but not Q2A,
+the script will create a new user account for the individual.
 
 ## PREREQS
 
-In order for PHP's built-in LDAP functionality to work correctly, your web server must be properly configured. In CentOS, this means openldap must be installed, and any certificates necessary to authenticate with LDAP specified in the openldap configuration.
+In order for PHP's built-in LDAP functionality to work correctly, your
+web server must be properly configured. In CentOS, this means openldap
+must be installed, and any certificates necessary to authenticate with
+LDAP specified in the openldap configuration.
 
 ## INSTALL
 

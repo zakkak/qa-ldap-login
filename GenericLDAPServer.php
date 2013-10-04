@@ -4,8 +4,8 @@
 /* Tested against OpenLDAP.
 */
 
-class GenericLDAPServer extends LDAPServer {
-
+class GenericLDAPServer extends LDAPServer
+{
   private $dn;
   private $authenticatedUser;
 

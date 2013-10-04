@@ -1,7 +1,7 @@
 <?php
 
-class LDAPServer {
-
+class LDAPServer
+{
   protected $con;
   protected $lastError;
 
@@ -15,9 +15,9 @@ class LDAPServer {
     ldap_set_option($this->con, LDAP_OPT_REFERRALS, 0);
   }
 
-  public function bindToLDAP($user,$pass){}
+  public function bindToLDAP($user,$pass) {}
 
-  public function getUserAttributes(){}
+  public function getUserAttributes() {}
 
   public function closeServerConnection()
   {

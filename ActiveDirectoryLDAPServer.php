@@ -9,13 +9,10 @@ class ActiveDirectoryLDAPServer extends LDAPServer
   // This LDAP attribute represents the legacy logon name in a Windows AD environment
   private $authenticationAttribute = "sAMAccountName";
   private $dn;
-  private $password;
   private $authenticatedUser;
 
   public function bindToLDAP($user,$pass)
   {
-    $this->password = $pass;
-
     $filter = "(".$this->authenticationAttribute."=".$user.")";  
 
     // Check if it authenticates the service account
@@ -54,7 +51,6 @@ class ActiveDirectoryLDAPServer extends LDAPServer
     }
 
     return false;
-  
   }
 
   public function getUserAttributes()

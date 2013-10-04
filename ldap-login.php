@@ -1,7 +1,7 @@
 <?php
 
-class ldap_login {
-
+class ldap_login
+{
   function load_module($directory, $urltoroot)
   {
     $this->directory=$directory;
@@ -44,12 +44,9 @@ class ldap_login {
   function match_source($source)
   {
     return $source=='ldap';
-  } // end function match_source
+  }
 
-  function login_html($tourl, $context)
-  {
-
-  } // end function login_html
+  function login_html($tourl, $context) {} 
 
   function logout_html ($tourl)
   {
