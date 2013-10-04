@@ -1,73 +1,77 @@
 <?php
-/* This class represents behavior and properties
+/* This class represents behavior and properties 
 /* for a Active Directory server with LDAP interfacing enabled.
 /* Tested against a Windows 2008R2 domain AD master.
-*/
+ */
+ 
+class ActiveDirectoryLDAPServer extends LDAPServer 
+{
+  // This LDAP attribute represents the legacy logon name in a Windows AD environment
+  private $authenticationAttribute = "sAMAccountName";
+  private $dn;
+  private $authenticatedUser;
 
-class ActiveDirectoryLDAPServer extends LDAPServer {
+  public function bindToLDAP($user,$pass)
+  {
+    $filter = "(".$this->authenticationAttribute."=".$user.")";  
 
-	// This LDAP attribute represents the legacy logon name in a Windows AD environment
-	private $authenticationAttribute = "sAMAccountName";
-	private $dn;
-	private $authenticatedUser;
+    // Check if it authenticates the service account
+    error_reporting(E_ALL^ E_WARNING);
+    @$bind_service_account = ldap_bind($this->con,qa_opt('ldap_login_ad_bind'), qa_opt('ldap_login_ad_pwd'));
 
-	public function bindToLDAP($user,$pass) {
-		global $ldap_service_account_bind, $ldap_service_account_pwd, $base_dn;
+    if($bind_service_account)
+    {
+      $attributes = array('dn');
+      $search = ldap_search($this->con, qa_opt('ldap_login_ad_basedn'), $filter, $attributes);  
+      $data = ldap_get_entries($this->con, $search);
+    }
+    else
+    {
+      return false;
+    }
+    
+    // if the user is found, try to authenticate with his DN and password entered
+    if (isset($data[0]))
+    {
+      $this->dn = $data[0]['dn'];
+      @$bind_user = ldap_bind($this->con, $this->dn, $pass);
+    }
+    else
+    {
+      return false;
+    }
+  
+    error_reporting(E_ALL);
 
-		$filter = "(".$this->authenticationAttribute."=".$user.")";
+    //we have to preserve the username entered if auth was succesfull
+    if($bind_user)
+    {
+      $this->authenticatedUser=$user;
+      return($bind_user); 
+    }
 
-		// Check if it authenticates the service account
-		error_reporting(E_ALL^ E_WARNING);
-		@$bind_service_account =
-			ldap_bind($this->con,$ldap_service_account_bind,$ldap_service_account_pwd);
+    return false;
+  }
 
-		if($bind_service_account) {
-			$attributes = array('dn');
-			$search     = ldap_search($this->con, $base_dn, $filter, $attributes);
-			$data       = ldap_get_entries($this->con, $search);
-		} else {
-			return false;
-		}
+  public function getUserAttributes()
+  {
+    $fname_tag = qa_opt('ldap_login_fname');
+    $sname_tag = qa_opt('ldap_login_sname');
+    $mail_tag = qa_opt('ldap_login_mail');
+    
+    $filter = qa_opt('ldap_login_filter');
+    $attributes = array('dn', $fname_tag, $sname_tag, $mail_tag);
 
-		// if the user is found, try to authenticate with his DN and password entered
-		if (isset($data[0])) {
-			$this->dn   = $data[0]['dn'];
-			@$bind_user = ldap_bind($this->con, $this->dn, $pass);
-		} else {
-			return false;
-		}
-		error_reporting(E_ALL);
+    // The DN is known so just use it to read attributes  
+    $read = ldap_read($this->con, $this->dn, $filter, $attributes);
+    $data = ldap_get_entries($this->con, $read);
 
-		//we have to preserve the username entered if auth was succesfull
-		if($bind_user) {
-			$this->authenticatedUser=$user;
-			return($bind_user);
-		}
+    $fname = $data[0][$fname_tag][0];
+    $sname = $data[0][$sname_tag][0];
+    $mail  = $data[0][$mail_tag][0];
 
-		return false;
-
-	}
-
-	public function getUserAttributes() {
-
-		global $ldap_fname, $ldap_sname, $ldap_mail, $base_dn, $ldap_filter;
-
-		$attributes = array('dn',$ldap_fname, $ldap_sname, $ldap_mail);
-
-		// The DN is known so just use it to read attributes
-		$read = ldap_read($this->con, $this->dn, $ldap_filter, $attributes);
-		$data = ldap_get_entries($this->con, $read);
-
-		$fname = $data[0][$ldap_fname][0];
-		$sname = $data[0][$ldap_sname][0];
-		$mail  = $data[0][$ldap_mail][0];
-
-		return array( $fname, $sname, $mail, $this->authenticatedUser);
-
-	}
-
+    return array( $fname, $sname, $mail, $this->authenticatedUser);
+  }
 }
-
-
 
 ?>

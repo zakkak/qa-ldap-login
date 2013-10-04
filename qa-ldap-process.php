@@ -1,82 +1,106 @@
 <?php
-/* This script grabs the user/pass combo directly from the
- * Question2Answer login page.  It uses a service account to find the
- * user in the ldap database.  When found the user/pass combo is
- * checked against the LDAP authentication source. Following this
- * check, it either creates a SESSION array or a cookie that can be
- * checked by the ldap-login module's check_login function, and
- * bypasses the internal QA auth.
- */
+  /* This script grabs the user/pass combo directly
+   * from the Question2Answer login page.
+   * It uses a service account to find
+   * the user in the ldap database. 
+   * When found the user/pass combo is checked against the 
+   * LDAP authentication source. Following
+   * this check, it either creates a SESSION array or
+   * a cookie that can be checked by the ldap-login
+   * module's check_login function, and bypasses the
+   * internal QA auth mechanism by redirecting back to
+   * the login page.
+  */
 
-require_once QA_INCLUDE_DIR."qa-base.php";
-require      QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ldap-config.php";
-require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/LDAPServer.php";
-require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ActiveDirectoryLDAPServer.php";
-require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/GenericLDAPServer.php";
+  require_once QA_INCLUDE_DIR."qa-base.php";
+  require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/LDAPServer.php";
+  require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/ActiveDirectoryLDAPServer.php";
+  require_once QA_INCLUDE_DIR."../qa-plugin/qa-ldap-login/GenericLDAPServer.php";
 
-function isEmpty($attr) {
-	return ($attr == '' || preg_match("/^[[:space:]]+$/", $attr));
-}
+  global $ldapserver;
 
-function ldap_process ($user,$pass) {
-	// Check if user or pass is empty
-	if ( isEmpty($user) || isEmpty($pass) ) {
-		return false;
-	}
+  function ldap_process ($user,$pass)
+  {
+    global $ldapserver;
 
-	if (LDAPServerType::ActiveDirectory) {
-		$ldapserver = new ActiveDirectoryLDAPServer();
-	} else {
-		$ldapserver = new GenericLDAPServer();
-	}
+    // Check ig user or pass is empty
+    if ( '' == $user || '' ==  $pass )
+    {
+      return false;
+    }
 
-	$ldapserver->connectWithServer();
+    if (qa_opt('ldap_login_ad')) 
+    {
+    	$ldapserver = new ActiveDirectoryLDAPServer();
+    }
+    else 
+    {
+      $ldapserver = new GenericLDAPServer();
+    }
 
-	if ($ldapserver->bindToLDAP($user,$pass)) {
-		$data = $ldapserver->getUserAttributes();
-	} else {
-		$data = false;
-	}
+    $ldapserver->connectWithServer();
 
-	$ldapserver->closeServerConnection();
-	return $data;
-}
+    if ($ldapserver->bindToLDAP($user,$pass))
+    {
+      $data = $ldapserver->getUserAttributes();
+      return $data;
+    }
 
-$name = ldap_process($inemailhandle,$inpassword);
-if ($name) {
-	// Set name variables based on results from LDAP
-	$fname = $name[0];
-	$lname = $name[1];
-	$email = $name[2];
-	$user  = $name[3];
+    $ldapserver->closeServerConnection();
+    return false;
+  }
 
-	if($inremember == 'true') {
-		$expire = 14*24*60*60; // 14 days
+  function isEmpty($attr){
+    if($attr == '' || preg_match("/^[[:space:]]+$/", $attr))
+    {
+      return true;
+    }
+    return false;
+  }
 
-		setcookie("qa-login_lname", $lname, time() + $expire, '/');
-		setcookie("qa-login_fname", $fname, time() + $expire, '/');
-		setcookie("qa-login_email", $email, time() + $expire, '/');
-		setcookie("qa-login_user" , $user , time() + $expire, '/');
-	} else {
-		$_SESSION["qa-login_lname"] = $lname;
-		$_SESSION["qa-login_fname"] = $fname;
-		$_SESSION["qa-login_email"] = $email;
-		$_SESSION["qa-login_user"]  = $user;
-	}
+  $expire = 14*24*60*60;
 
-	$topath=qa_get('to');
-	if (isset($topath))
-		qa_redirect_raw(qa_path_to_root().$topath); // path already provided as URL fragment
-	else
-		qa_redirect('');
-	exit();
-} else {
-	// Failed to login
-	if(!$ldap_allow_normal_login) {
-		// FIXME somehow print a message
-		qa_redirect('login');
-		exit();
-	}
-}
-
+  if (!isEmpty($inemailhandle))
+  {
+    if (!isEmpty($inpassword))
+    {
+      $name = ldap_process($inemailhandle,$inpassword);
+      if ($name)
+      {
+        // Set name variables based on results from LDAP
+        $fname = $name[0];
+        $lname = $name[1];
+        $email = $name[2];
+        $user = $name[3];
+        
+        if($inremember == 'true')
+        {
+          setcookie("qa-login_lname", $lname, time() + $expire, '/');
+          setcookie("qa-login_fname", $fname, time() + $expire, '/');
+          setcookie("qa-login_email", $email, time() + $expire, '/');
+          setcookie("qa-login_user", $user, time() + $expire, '/');
+        } else
+        {
+          $_SESSION["qa-login_lname"] = $lname;
+          $_SESSION["qa-login_fname"] = $fname;
+          $_SESSION["qa-login_email"] = $email;
+          $_SESSION["qa-login_user"] = $user;
+        }
+        $topath=qa_get('to');
+        if (isset($topath))
+          qa_redirect_raw(qa_path_to_root().$topath); // path already provided as URL fragment
+        else
+        qa_redirect('');
+        exit();
+      } else
+      {
+        if(!qa_opt('ldap_login_allow_normal'))
+        {
+          // FIXME somehow print a message
+          qa_redirect('login');
+          exit();
+        }
+      }
+    }
+  }
 ?>

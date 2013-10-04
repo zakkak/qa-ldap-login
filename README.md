@@ -18,21 +18,12 @@ LDAP specified in the openldap configuration.
 
 To install the plugin:
 
-1. Add the qa-ldap-login directory with plugin files to the qa-plugin
-   directory for your Q2A install.
+1. Add the qa-ldap-login directory with plugin files to the qa-plugin directory for your Q2A install.
 
-2. Copy ldap-config-example.php to ldap-config.php and edit to match
-   your LDAP server settings.
+2. Insert the following line of code above the if statement near line 59 of qa-include/qa-page-login.php
 
-3. Insert the following line of code above the if statement near line
-   66 of qa-include/qa-page-login.php
+	require_once QA_INCLUDE_DIR.'../qa-plugin/qa-ldap-login/qa-ldap-process.php';
 
-        require_once QA_INCLUDE_DIR.'../qa-plugin/qa-ldap-login/qa-ldap-process.php';
+3. Change the options for the plugin in the administrator interface.
 
 4. If your LDAP settings are configured correctly, that should be it!
-
-## DEBUG
-
-In case it doesn't work try commenting out `error_reporting(E_ALL^ E_WARNING);`
-in GenericLDAPServer.php and/or ActiveDirectoryLDAPServer.php.  This
-will enable printing warnings from `ldap_bind`.
