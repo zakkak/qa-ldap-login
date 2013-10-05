@@ -4,48 +4,39 @@
 /* Tested against a Windows 2008R2 domain AD master.
  */
  
-class ActiveDirectoryLDAPServer extends LDAPServer 
-{
+class ActiveDirectoryLDAPServer extends LDAPServer {
   // This LDAP attribute represents the legacy logon name in a Windows AD environment
   private $authenticationAttribute = "sAMAccountName";
   private $dn;
   private $authenticatedUser;
 
-  public function bindToLDAP($user,$pass)
-  {
+  public function bindToLDAP($user,$pass) {
     $filter = "(".$this->authenticationAttribute."=".$user.")";  
 
     // Check if it authenticates the service account
     error_reporting(E_ALL^ E_WARNING);
     @$bind_service_account = ldap_bind($this->con,qa_opt('ldap_login_ad_bind'), qa_opt('ldap_login_ad_pwd'));
 
-    if($bind_service_account)
-    {
+    if($bind_service_account) {
       $attributes = array('dn');
       $search = ldap_search($this->con, qa_opt('ldap_login_ad_basedn'), $filter, $attributes);  
       $data = ldap_get_entries($this->con, $search);
-    }
-    else
-    {
+    } else {
       return false;
     }
     
     // if the user is found, try to authenticate with his DN and password entered
-    if (isset($data[0]))
-    {
+    if (isset($data[0])) {
       $this->dn = $data[0]['dn'];
       @$bind_user = ldap_bind($this->con, $this->dn, $pass);
-    }
-    else
-    {
+    } else {
       return false;
     }
   
     error_reporting(E_ALL);
 
     //we have to preserve the username entered if auth was succesfull
-    if($bind_user)
-    {
+    if($bind_user) {
       $this->authenticatedUser=$user;
       return($bind_user); 
     }
@@ -53,8 +44,7 @@ class ActiveDirectoryLDAPServer extends LDAPServer
     return false;
   }
 
-  public function getUserAttributes()
-  {
+  public function getUserAttributes() {
     $fname_tag = qa_opt('ldap_login_fname');
     $sname_tag = qa_opt('ldap_login_sname');
     $mail_tag = qa_opt('ldap_login_mail');

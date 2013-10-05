@@ -19,29 +19,23 @@
 
   global $ldapserver;
 
-  function ldap_process ($user,$pass)
-  {
+  function ldap_process ($user,$pass) {
     global $ldapserver;
 
     // Check ig user or pass is empty
-    if ( '' == $user || '' ==  $pass )
-    {
+    if ( '' == $user || '' ==  $pass ) {
       return false;
     }
 
-    if (qa_opt('ldap_login_ad')) 
-    {
+    if (qa_opt('ldap_login_ad')) {
     	$ldapserver = new ActiveDirectoryLDAPServer();
-    }
-    else 
-    {
+    } else {
       $ldapserver = new GenericLDAPServer();
     }
 
     $ldapserver->connectWithServer();
 
-    if ($ldapserver->bindToLDAP($user,$pass))
-    {
+    if ($ldapserver->bindToLDAP($user,$pass)) {
       $data = $ldapserver->getUserAttributes();
       return $data;
     }
@@ -50,9 +44,8 @@
     return false;
   }
 
-  function isEmpty($attr){
-    if($attr == '' || preg_match("/^[[:space:]]+$/", $attr))
-    {
+  function isEmpty($attr) {
+    if($attr == '' || preg_match("/^[[:space:]]+$/", $attr)) {
       return true;
     }
     return false;
@@ -60,27 +53,22 @@
 
   $expire = 14*24*60*60;
 
-  if (!isEmpty($inemailhandle))
-  {
-    if (!isEmpty($inpassword))
-    {
+  if (!isEmpty($inemailhandle)) {
+    if (!isEmpty($inpassword)) {
       $name = ldap_process($inemailhandle,$inpassword);
-      if ($name)
-      {
+      if ($name) {
         // Set name variables based on results from LDAP
         $fname = $name[0];
         $lname = $name[1];
         $email = $name[2];
         $user = $name[3];
         
-        if($inremember == 'true')
-        {
+        if($inremember == 'true') {
           setcookie("qa-login_lname", $lname, time() + $expire, '/');
           setcookie("qa-login_fname", $fname, time() + $expire, '/');
           setcookie("qa-login_email", $email, time() + $expire, '/');
           setcookie("qa-login_user", $user, time() + $expire, '/');
-        } else
-        {
+        } else {
           $_SESSION["qa-login_lname"] = $lname;
           $_SESSION["qa-login_fname"] = $fname;
           $_SESSION["qa-login_email"] = $email;
@@ -90,12 +78,10 @@
         if (isset($topath))
           qa_redirect_raw(qa_path_to_root().$topath); // path already provided as URL fragment
         else
-        qa_redirect('');
+          qa_redirect('');
         exit();
-      } else
-      {
-        if(!qa_opt('ldap_login_allow_normal'))
-        {
+      } else {
+        if(!qa_opt('ldap_login_allow_normal')) {
           // FIXME somehow print a message
           qa_redirect('login');
           exit();

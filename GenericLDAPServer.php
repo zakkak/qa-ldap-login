@@ -4,20 +4,16 @@
 /* Tested against OpenLDAP.
 */
 
-class GenericLDAPServer extends LDAPServer
-{
+class GenericLDAPServer extends LDAPServer {
   private $dn;
   private $authenticatedUser;
 
-  public function bindToLDAP($user,$pass)
-  {
+  public function bindToLDAP($user,$pass) {
     $ldap_search_strings = explode('/', qa_opt('ldap_login_generic_search'));
 
-    foreach ($ldap_search_strings as &$search_post)
-    {
+    foreach ($ldap_search_strings as &$search_post) {
       // check whether the search string contains USERNAME
-      if ( strpos($search_post, 'USERNAME') !== false )
-      {
+      if ( strpos($search_post, 'USERNAME') !== false ) {
         $this->dn = str_replace("USERNAME", $user, $search_post);
         // Check if it authenticates
         error_reporting(E_ALL^ E_WARNING);
@@ -25,8 +21,7 @@ class GenericLDAPServer extends LDAPServer
         error_reporting(E_ALL);
 
         //we have to preserve the username entered if auth was succesfull
-        if($bind)
-        {
+        if($bind) {
           $this->authenticatedUser = $user;
           return $bind;
         }
@@ -35,8 +30,7 @@ class GenericLDAPServer extends LDAPServer
     return false;
   }
 
-  public function getUserAttributes()
-  {
+  public function getUserAttributes() {
     $fname_tag = qa_opt('ldap_login_fname');
     $sname_tag = qa_opt('ldap_login_sname');
     $mail_tag = qa_opt('ldap_login_mail');

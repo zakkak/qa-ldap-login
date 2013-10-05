@@ -5,10 +5,8 @@
 /* for the LDAP plugin.
 */
 
-class ldap_login_admin_form
-{
-  function option_default($option)
-  {
+class ldap_login_admin_form {
+  function option_default($option)   {
     if ($option=='ldap_login_hostname')
       return 'ldap://localhost';
     if ($option=='ldap_login_port')
@@ -42,12 +40,10 @@ class ldap_login_admin_form
     return null;
   }
   
-  function admin_form(&$qa_content)
-  {
+  function admin_form(&$qa_content) {
     $saved=false;
     
-    if (qa_clicked('ldap_login_save_button'))
-    {
+    if (qa_clicked('ldap_login_save_button')) {
       qa_opt('ldap_login_hostname', qa_post_text('ldap_login_hostname_field'));
       qa_opt('ldap_login_port', (int) qa_post_text('ldap_login_port_field'));
 

@@ -1,12 +1,10 @@
 <?php
 
-class LDAPServer
-{
+class LDAPServer {
   protected $con;
   protected $lastError;
 
-  public function connectWithServer()
-  {
+  public function connectWithServer() {
     $ldap_host = qa_opt('ldap_login_hostname');
     // Establish link with LDAP server
     $this->con = ldap_connect($ldap_host, qa_opt('ldap_login_port')) or die ("Could not connect to $ldap_host host.");
@@ -19,14 +17,12 @@ class LDAPServer
 
   public function getUserAttributes() {}
 
-  public function closeServerConnection()
-  {
+  public function closeServerConnection() {
     $this->lastError = ldap_errno($this->con);
     ldap_close($this->con);
   }
 
-  public function showErrors()
-  {
+  public function showErrors() {
     return $this->lastError;
   }
 }
