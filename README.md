@@ -1,3 +1,5 @@
+# LDAP login
+
 ## README
 
 qa-ldap-login is an LDAP authentication mechanism for
@@ -27,3 +29,10 @@ To install the plugin:
 3. Change the options for the plugin in the administrator interface.
 
 4. If your LDAP settings are configured correctly, that should be it!
+
+## DEBUG
+
+In case it doesn't work try commenting out
+`error_reporting(E_ALL^E_WARNING);` in GenericLDAPServer.php and/or
+ActiveDirectoryLDAPServer.php.  This will enable printing warnings
+from
