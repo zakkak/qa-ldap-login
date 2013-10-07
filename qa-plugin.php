@@ -2,15 +2,14 @@
 
 /*
   Plugin Name: LDAP-Login
-  Plugin URI: https://github.com/zakkak/qa-ldap-login
   Plugin Description: Allows ldap authentication within Q2A
+  Plugin URI: https://github.com/zakkak/qa-ldap-login
+  Plugin Update Check URI: https://github.com/zakkak/qa-ldap-login/raw/master/qa-plugin.php
   Plugin Version: 0.4
   Plugin Date: 2013-10-05
-  Plugin Author: Karl Bitz, Foivos Zakkak, Peter Edwards
+  Plugin Author: Karl Bitz, Foivos S. Zakkak, Peter Edwards
   Plugin License: Free
   Plugin Minimum Question2Answer Version: 1.4
-  Plugin Update Check URI: https://raw.github.com/zakkak/qa-ldap-login/master/qa-plugin.php
-  
 */
 
 error_reporting(E_ALL);
