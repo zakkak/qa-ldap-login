@@ -15,7 +15,11 @@ class ActiveDirectoryLDAPServer extends LDAPServer {
 
     // Check if it authenticates the service account
     error_reporting(E_ALL^ E_WARNING);
-    @$bind_service_account = ldap_bind($this->con,qa_opt('ldap_login_ad_bind'), qa_opt('ldap_login_ad_pwd'));
+    if(!qa_opt('ldap_login_ad_pwd')) {
+        @$bind_service_account = ldap_bind($this->con);
+    } else {
+        @$bind_service_account = ldap_bind($this->con,qa_opt('ldap_login_ad_bind'), qa_opt('ldap_login_ad_pwd'));
+    }
 
     if($bind_service_account) {
       $attributes = array('dn');
