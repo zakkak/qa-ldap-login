@@ -42,9 +42,9 @@ class GenericLDAPServer extends LDAPServer {
     $search = ldap_search($this->con, $this->dn, $filter, $attributes);
     $data = ldap_get_entries($this->con, $search);
 
-    $fname = $data[0][$fname_tag][0];
-    $sname = $data[0][$sname_tag][0];
-    $mail  = $data[0][$mail_tag][0];
+    $fname = $data[0][strtolower($fname_tag)][0];
+    $sname = $data[0][strtolower($sname_tag)][0];
+    $mail  = $data[0][strtolower($mail_tag)][0];
 
     return array( $fname, $sname, $mail, $this->authenticatedUser);
   }
