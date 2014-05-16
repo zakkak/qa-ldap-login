@@ -41,11 +41,18 @@ class ldap_logout_process {
       setcookie("qa-login_lname", '1', time()-$expire, '/');
       setcookie("qa-login_email", '1', time()-$expire, '/');
     }
+    qa_clear_session_cookie();
+    qa_clear_session_user();
+    qa_set_logged_in_user(null);
     session_destroy();
-    if (!$tourl) {
-      qa_redirect('logout');
-    } else {
-      header('Location: '.$tourl);
+
+    //No necesito redireccion cuando llamo por moodle
+    if (!isset($_GET['noredirect'])){
+      if (!$tourl) {
+        qa_redirect('logout');
+      } else {
+        header('Location: '.$tourl);
+      }      
     }
     return null;
   } // end function process_request
