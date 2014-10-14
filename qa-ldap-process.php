@@ -63,6 +63,13 @@
         $email = $name[2];
         $user = $name[3];
         
+		// Do not login or create account if mail value is NULL
+		if ( '' == $email ){
+		  // FIXME somehow print a message
+          qa_redirect('login');
+          exit();
+		}
+		
         if($inremember == 'true') {
           setcookie("qa-login_lname", $lname, time() + $expire, '/');
           setcookie("qa-login_fname", $fname, time() + $expire, '/');
