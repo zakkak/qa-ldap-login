@@ -22,7 +22,7 @@ To install the plugin:
 
 1. Add the qa-ldap-login directory with plugin files to the qa-plugin directory for your Q2A install.
 
-2. Insert the following line of code above the if statement near line 59 of qa-include/qa-page-login.php
+2. Insert the following line of code above the if statement at line 61 of qa-include/pages/login.php
 
 	require_once QA_INCLUDE_DIR.'../qa-plugin/qa-ldap-login/qa-ldap-process.php';
 
