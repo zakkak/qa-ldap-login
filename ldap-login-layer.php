@@ -8,7 +8,7 @@
         unset($navigation['register']);
       }
 
-      qa_html_theme_base::nav_list($navigation, $navtype);
+      qa_html_theme_base::nav_list($navigation, $navtype, $level);
     } // end function nav_list
   }
 
