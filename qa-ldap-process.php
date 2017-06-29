@@ -70,7 +70,7 @@
           exit();
         }
 
-        if($inremember == 'true') {
+        if($inremember == '1') {
           setcookie("qa-login_lname", $lname, time() + $expire, '/');
           setcookie("qa-login_fname", $fname, time() + $expire, '/');
           setcookie("qa-login_email", $email, time() + $expire, '/');
