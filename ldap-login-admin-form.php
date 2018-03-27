@@ -15,7 +15,7 @@ class ldap_login_admin_form {
     if ($option=='ldap_login_filter')
       return '(objectClass=*)';
     if ($option=='ldap_login_fname')
-      return 'givenname';
+      return 'givenName';
     if ($option=='ldap_login_sname')
       return 'sn';
     if ($option=='ldap_login_mail')
@@ -23,12 +23,10 @@ class ldap_login_admin_form {
 
     if ($option=='ldap_login_ad')
       return true;
-    if ($option=='ldap_login_ad_bind')
-      return 'CN=serviceaccount,CN=Managed Service Accounts,DC=contoso,DC=local';
-    if ($option=='ldap_login_ad_pwd')
-      return '12345678';
+    if ($option=='ldap_login_ad_bind_domain')
+      return 'CONTOSO';
     if ($option=='ldap_login_ad_basedn')
-      return 'OU=Users,DC=contoso,DC=local';
+      return 'DC=contoso,DC=local';
 
     if ($option=='ldap_login_generic_search')
       return 'uid=USERNAME,OU=people,DC=company,DC=local/uid=USERNAME,OU=people3,DC=company,DC=local';
@@ -56,7 +54,7 @@ class ldap_login_admin_form {
       qa_opt('ldap_login_mail', qa_post_text('ldap_login_mail_field'));
 
       qa_opt('ldap_login_ad', (bool) qa_post_text('ldap_login_ad_field'));
-      qa_opt('ldap_login_ad_bind', qa_post_text('ldap_login_ad_bind_field'));
+      qa_opt('ldap_login_ad_bind_domain', qa_post_text('ldap_login_ad_bind_domain_field'));
       qa_opt('ldap_login_ad_pwd', qa_post_text('ldap_login_ad_pwd_field'));
       qa_opt('ldap_login_ad_basedn', qa_post_text('ldap_login_ad_basedn_field'));
       qa_opt('ldap_login_generic_search', qa_post_text('ldap_login_generic_search_field'));
@@ -71,7 +69,7 @@ class ldap_login_admin_form {
 
     qa_set_display_rules($qa_content, array(
       'ldap_login_allow_registration_display' => 'ldap_login_allow_normal_field',
-      'ldap_login_ad_bind_display' => 'ldap_login_ad_field',
+      'ldap_login_ad_bind_domain_display' => 'ldap_login_ad_field',
       'ldap_login_ad_pwd_display' => 'ldap_login_ad_field',
       'ldap_login_ad_basedn_display' => 'ldap_login_ad_field',
       'ldap_login_generic_search_display' => '!ldap_login_ad_field',
@@ -89,7 +87,7 @@ class ldap_login_admin_form {
         ),
 
         array(
-          'label' => 'Port for LDAP Server (389 for non-SSL, 636 for SSL)',
+          'label' => 'Port for LDAP Server (389 for non-SSL, 636 for SSL, 3268 for AD non-SSL, 3269 for AD SSL)',
           'type' => 'number',
           'value' => qa_opt('ldap_login_port'),
           'tags' => 'name="ldap_login_port_field"',
@@ -131,19 +129,11 @@ class ldap_login_admin_form {
         ),
 
         array(
-          'id' => 'ldap_login_ad_bind_display',
-          'label' => 'Binding account for AD',
+          'id' => 'ldap_login_ad_bind_domain_display',
+          'label' => 'Binding domain for AD',
           'type' => 'text',
-          'value' => qa_opt('ldap_login_ad_bind'),
-          'tags' => 'name="ldap_login_ad_bind_field"',
-        ),
-
-        array(
-          'id' => 'ldap_login_ad_pwd_display',
-          'label' => 'Password for AD binging accout',
-          'type' => 'text',
-          'value' => qa_opt('ldap_login_ad_pwd'),
-          'tags' => 'name="ldap_login_ad_pwd_field"',
+          'value' => qa_opt('ldap_login_ad_bind_domain'),
+          'tags' => 'name="ldap_login_ad_bind_domain_field"',
         ),
 
         array(
