@@ -140,7 +140,7 @@ class ldap_login_admin_form {
 
         array(
           'id' => 'ldap_login_ad_pwd_display',
-          'label' => 'Password for AD binding accout',
+          'label' => 'Password for AD binding account',
           'type' => 'text',
           'value' => qa_opt('ldap_login_ad_pwd'),
           'tags' => 'name="ldap_login_ad_pwd_field"',
