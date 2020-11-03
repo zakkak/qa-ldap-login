@@ -35,13 +35,6 @@ class ldap_logout_process {
     } else {
       $tourl = false;
     }
-
-    if(isset($_COOKIE["qa-login_fname"])) {
-      setcookie("qa-login_fname", '1', time()-$expire, '/');
-      setcookie("qa-login_lname", '1', time()-$expire, '/');
-      setcookie("qa-login_email", '1', time()-$expire, '/');
-      setcookie("qa-login_user", '1', time()-$expire, '/');
-    }
     session_destroy();
     if (!$tourl) {
       qa_redirect('logout');
