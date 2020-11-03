@@ -69,18 +69,17 @@
           qa_redirect('login');
           exit();
         }
+        // REMY BLOM: DO WHAT THE SCRIPT IS SUPPOSED TO DO, DON'T SET COOKIES?!?!?!
+        // (especially not when they introduce an a possibility to do Cookie-SPOOFING!)
+        $source = 'ldap';
+        $identifier = $email;
 
-        if($inremember == '1') {
-          setcookie("qa-login_lname", $lname, time() + $expire, '/');
-          setcookie("qa-login_fname", $fname, time() + $expire, '/');
-          setcookie("qa-login_email", $email, time() + $expire, '/');
-          setcookie("qa-login_user", $user, time() + $expire, '/');
-        } else {
-          $_SESSION["qa-login_lname"] = $lname;
-          $_SESSION["qa-login_fname"] = $fname;
-          $_SESSION["qa-login_email"] = $email;
-          $_SESSION["qa-login_user"] = $user;
-        }
+        $fields['email'] = $email;
+        $fields['confirmed'] = true;
+        $fields['handle'] = $user;
+        $fields['name'] = $fname . " " . $lname;
+        qa_log_in_external_user($source, $identifier, $fields, $inremember);
+
         $topath=qa_get('to');
         if (isset($topath))
           qa_redirect_raw(qa_path_to_root().$topath); // path already provided as URL fragment
