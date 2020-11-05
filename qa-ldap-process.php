@@ -69,8 +69,6 @@
           qa_redirect('login');
           exit();
         }
-        // REMY BLOM: DO WHAT THE SCRIPT IS SUPPOSED TO DO, DON'T SET COOKIES?!?!?!
-        // (especially not when they introduce an a possibility to do Cookie-SPOOFING!)
         $source = 'ldap';
         $identifier = $email;
 
